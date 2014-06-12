@@ -5,7 +5,19 @@ Nibbleblog Search
 
 First working version of a search plugin for Nibbleblog
 
+Should be installed in /plugins/search.
 
+Note: Nibbleblog may require a languages subfolder "languages" with a file called en_US.bit.
+Languages have not yet been implemented.
+
+<?php
+
+$_PLUGIN_CONFIG['LANG'] = array(
+	'NAME'=>'Hello world',
+	'DESCRIPTION'=>'Show hello world.'
+);
+
+?>
 
 ===================
 
