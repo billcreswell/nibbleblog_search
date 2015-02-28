@@ -1,98 +1,99 @@
 <?php
 
 $_PLUGIN_CONFIG['DATA'] = array(
-    'author'=>'grwebguy',
-    'version'=>'1.0',
-    'url'=>'http://www.twitter.com/grwebguy'
+    'author' => 'grwebguy',
+    'version' => '1.0',
+    'url' => 'http://www.twitter.com/grwebguy'
 );
 
 class PLUGIN_SEARCH extends Plugin
 {
     public function blog_body()
     {
-        $q="";
-        $l="";
-        if(isset($_REQUEST["q"])) {
-            $q = $_REQUEST["q"];
-            $list = $this->search_in_dir("content/public",$q);
+        $q = '';
+        $l = '';
+        if(isset($_REQUEST['q'])) {
+            $q = $_REQUEST['q'];
+            $list = $this->search_in_dir('content/public', $q);
             $l = '<ul>';
-
-            foreach($list as $post)
-            {
-                $l .= "<li>-<a href=". $post["fileurl"].">". $post['title'] ."</a></li>";
+            foreach($list as $post) {
+                $l .= "<li>-<a href='" . $post['fileurl'] . "'>". $post['title'] ."</a></li>";
             }
-
-        $l .= '</ul>';
-
-        }
-        $html = <<<EOT
+            $l .= '</ul>';
+    }
+    
+    $html = <<<EOT
 <form method=GET >
 <input name=q size=15 maxlength=255 value="$q">
 <input type=submit value="Search">
 </form>
 EOT;
-        $html.=$l;
+        $html .= $l;
         return $html;
     }
+    
 /**
+ * Main Search Function
  * http://stackoverflow.com/questions/12057174/php-find-keywords-recursively-in-files-and-return-surrounding-context-as-well-a?lq=1
  */
     public function search_in_dir( $dir, $str )
     {
         $results=array();
-        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir)) as $filename)
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir)) as $filename) {
             $files[] = $filename;
-
-        foreach( $files as $k => $file )
-        {
+        }
+        
+        foreach( $files as $k => $file ) {
             $source = file_get_contents( $file );
-            if( stripos( $source, $str ) !== false )
-            {
-                $data=$this->getDataFromFileName($files[$k]);
-                if($data["filetype"]!="") {
+            if( stripos( $source, $str ) !== false ) {
+                $data = $this->getDataFromFileName($files[$k]);
+                if($data['filetype'] != '') {
                 // get title
                     $doc = new DOMDocument();
                     @$doc->loadHTML($source);
                     $nodes = $doc->getElementsByTagName('title');
                     $data['title'] = $nodes->item(0)->nodeValue;
-
-                    $results[]=$data;
+                    if (strlen($data['title']) < 1) {
+                        $data['title'] = 'untitled post';
+                    }
+                    $results[] = $data;
                 }
             } else {
                 unset( $files[$k] );
             }
         }
-        #return array_filter( $files );
         return array_filter($results);
     }
 
+/**
+ * Extract information from the file name
+ * @todo extract date from posts
+ */
     private function getDataFromFileName($filename)
     {
         $data=array(
-            "filename"=>"",
-            "filetype"=>"",
-            "fileurl"=>"",
-            "title"=>"S"
+            'filename' => '',
+            'filetype' => '',
+            'fileurl' => '',
+            'title' => 'S'
         );
-        $data["filename"]=$filename;
+        $data['filename'] = $filename;
+    
+    // Post Type
         if(strpos($filename, 'post')){
-            $data["filetype"]='post';
-            $p=explode(".",$filename);
-            $postid=$p[1];
-            $data["fileurl"]="?controller=post&action=view&id_post=" . $postid;
+            $data['filetype'] = 'post';
+            $p = explode(".",$filename);
+            $postid = $p[1];
+            $data['fileurl'] = '?controller=post&action=view&id_post=' . $postid;
         }
+    
+    // Page type    
         if(strpos($filename, 'page')) {
-            $data["filetype"]='page';
-
-            $p=explode(".",$filename);
-            $pageid = substr( $p[0], strrpos( $p[0], '/' )+1 );
-
-            $data["fileurl"]="?controller=page&action=view&id_page=" . $pageid;
+            $data['filetype'] = 'page';
+            $p = explode('.', $filename);
+            $pageid = substr($p[0], strrpos($p[0], '/' )+1 );
+            $data['fileurl'] = '?controller=page&action=view&id_page=' . $pageid;
         }
         return $data;
     }
-
 }
-
-
-
