@@ -1,0 +1,6 @@
+<?php
+
+$_PLUGIN_CONFIG['LANG'] = array(
+    'NAME'=>'Search',
+    'DESCRIPTION'=>'Search plugin'
+);
