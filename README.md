@@ -27,3 +27,9 @@ Easy, fast and free CMS Blog. All you need is PHP to work.
 http://www.nibbleblog.com
 
 https://github.com/dignajar/nibbleblog
+
+===
+1.1 
+-Added empty language file
+-Fix for file opening dir error (thanks Schlumpfuk)
+-Fix for not searching drafts (thanks Schlumpfuk)
