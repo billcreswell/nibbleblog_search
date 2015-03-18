@@ -44,8 +44,11 @@ EOT;
         }
         
         foreach( $files as $k => $file ) {
+            if(is_dir($file)) {
+                continue;
+            }
             $source = file_get_contents( $file );
-            if( stripos( $source, $str ) !== false ) {
+            if( stripos( $source, $str ) !== false  && strpos( $file, 'draft' ) == false ) {
                 $data = $this->getDataFromFileName($files[$k]);
                 if($data['filetype'] != '') {
                 // get title
