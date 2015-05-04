@@ -23,7 +23,7 @@ class PLUGIN_SEARCH extends Plugin
     }
     
     $html = <<<EOT
-<form method=GET >
+<form id="ToSearch" method=GET action="#ToSearch">
 <input name=q size=15 maxlength=255 value="$q">
 <input type=submit value="Search">
 </form>
