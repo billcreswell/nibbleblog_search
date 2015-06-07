@@ -23,7 +23,7 @@ class PLUGIN_SEARCH extends Plugin
     }
     
     $html = <<<EOT
-<form method=GET >
+<form id="ToSearch" method=GET action="#ToSearch">
 <input name=q size=15 maxlength=255 value="$q">
 <input type=submit value="Search">
 </form>
@@ -55,7 +55,7 @@ EOT;
                     $doc = new DOMDocument();
                     @$doc->loadHTML($source);
                     $nodes = $doc->getElementsByTagName('title');
-                    $data['title'] = $nodes->item(0)->nodeValue;
+                    $data['title'] = utf8_decode($nodes->item(0)->nodeValue);
                     if (strlen($data['title']) < 1) {
                         $data['title'] = 'untitled post';
                     }
